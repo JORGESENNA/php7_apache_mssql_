@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  php:
+    # Build context for the Dockerfile location
+    build: ./php
+    ports:
+      # Open 8080 to the container port 80
+      - "8080:80"
+    depends_on:
+      # Get mssql service is started before the php service
+      - mssql
+
+  mssql:
+    # SQL Server image
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      # Map host port 1433 to container port 1433
+      - "1433:1433"
+    environment:
+      # Accept the End-User License Agreement
+      - ACCEPT_EULA=Y
+      # Set the sa user password for the SQL Server
+      - SA_PASSWORD=YourStrong!Password
+    # persist SQL Server data
+    volumes:
+      - mssql-srv:/var/opt/mssql
+# Define the volume
+volumes:
+  mssql-srv:
